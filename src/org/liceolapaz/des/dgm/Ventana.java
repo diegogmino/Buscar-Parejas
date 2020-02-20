@@ -3,6 +3,9 @@ package org.liceolapaz.des.dgm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -10,10 +13,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 
 public class Ventana extends JFrame {
+	
+	private JFrame inicial = new JFrame();
 	
 	public Ventana() {
 		super();
@@ -52,17 +60,66 @@ public class Ventana extends JFrame {
 		// Valores para el botón de iniciar partida
 		botonPortada.setIcon(imagenPortada);
 		botonPortada.setBounds(225, 140, 250, 250);
-		this.add(botonPortada);
+		botonPortada.addActionListener(new ActionListener() {
+			
+			
+			public void actionPerformed(ActionEvent e) {
+				// Llamamos al método para borrar la pantalla
+				borrar();
+				
+			}
+
+			private void borrar() {
+				// Borramos componentes
+				remove(botonPortada);
+				remove(textoAutor);
+				remove(textoDescripcion);
+				remove(textoTitulo);
+				revalidate();
+				repaint();
+				// Cambiamos el color del borde a rojo
+				getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));
+				
+			}
+		});
 		
-		crearMenu();
+		this.add(botonPortada);
 		
 		URL url = getClass().getResource("/icono.PNG");
 		setIconImage(new ImageIcon(url).getImage());
 	}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	protected void juego() {
+		
+		
+		
+		
+	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	private void nuevaPantalla() {
+	
+	
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	private void crearMenu() {
-		// TODO Auto-generated method stub
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Archivo");
+		menu.setMnemonic(KeyEvent.VK_A);
 		
+		// Creamos el boton de nuevo archivo
+			JMenuItem nuevoArchivo = new JMenuItem("Nuevo");
+			nuevoArchivo.setMnemonic(KeyEvent.VK_N);
+			nuevoArchivo.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
+			menu.add(nuevoArchivo);
+			
+		menuBar.add(menu);
+		setJMenuBar(menuBar);	
 	}
 
 }
