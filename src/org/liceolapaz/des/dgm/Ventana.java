@@ -3,6 +3,7 @@ package org.liceolapaz.des.dgm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,6 +12,7 @@ import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -18,8 +20,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import org.liceolapaz.des.dgm.Tablero;
 
 public class Ventana extends JFrame {
+	
+	private Tablero tablero;
+	private int filas = 3, columnas = 4;
 	
 	private JFrame inicial = new JFrame();
 	
@@ -78,8 +84,8 @@ public class Ventana extends JFrame {
 				revalidate();
 				repaint();
 				// Cambiamos el color del borde a rojo
-				getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));
-				
+				// getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));
+				crearTablero();
 			}
 		});
 		
@@ -89,37 +95,113 @@ public class Ventana extends JFrame {
 		setIconImage(new ImageIcon(url).getImage());
 	}
 	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-
-	protected void juego() {
-		
-		
-		
-		
-	}
-	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
-	private void nuevaPantalla() {
-	
-	
+	private void crearTablero() {
+		
+		crearMenu();
+		getRootPane().setBorder(null);
+		setResizable(true);
+		setLayout(new BorderLayout());
+		this.tablero = new Tablero(this, filas, columnas);
+		add(this.tablero, BorderLayout.CENTER);
+		revalidate();
+		
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-	private void crearMenu() {
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("Archivo");
-		menu.setMnemonic(KeyEvent.VK_A);
+	public void crearMenu() {
 		
-		// Creamos el boton de nuevo archivo
-			JMenuItem nuevoArchivo = new JMenuItem("Nuevo");
-			nuevoArchivo.setMnemonic(KeyEvent.VK_N);
-			nuevoArchivo.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
-			menu.add(nuevoArchivo);
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menuPartida = new JMenu("Partida");
+		menuPartida.setMnemonic(KeyEvent.VK_P);	
+		
+		JMenuItem nuevaPartida = new JMenuItem("Nueva partida");
+		nuevaPartida.setIcon(new ImageIcon(getClass().getResource("/NuevaPartida.png")));
+		nuevaPartida.setMnemonic(KeyEvent.VK_N);
+		nuevaPartida.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
+		nuevaPartida.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		menuPartida.add(nuevaPartida);
+		
+		JMenuItem guardarPartida = new JMenuItem("Guardar Partida");
+		guardarPartida.setIcon(new ImageIcon(getClass().getResource("/GuardarPartida.png")));
+		guardarPartida.setMnemonic(KeyEvent.VK_G);
+		guardarPartida.setAccelerator(KeyStroke.getKeyStroke("ctrl G"));
+		guardarPartida.addActionListener(new ActionListener() {
 			
-		menuBar.add(menu);
-		setJMenuBar(menuBar);	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
+		menuPartida.add(guardarPartida);
+		
+		JMenuItem cargarPartida = new JMenuItem("Cargar Partida");
+		cargarPartida.setIcon(new ImageIcon(getClass().getResource("/CargarPartida.png")));
+		cargarPartida.setMnemonic(KeyEvent.VK_C);
+		cargarPartida.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
+		cargarPartida.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		menuPartida.add(cargarPartida);
+		
+		JMenuItem salir = new JMenuItem("Salir");
+		salir.setIcon(new ImageIcon(getClass().getResource("/salir.png")));
+		salir.setMnemonic(KeyEvent.VK_S);
+		salir.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
+		salir.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		
+		menuPartida.add(salir);
+		menuBar.add(menuPartida);
+		
+		
+		JMenu menuOpciones = new JMenu("Opciones");
+		menuPartida.setMnemonic(KeyEvent.VK_O);
+		
+		JCheckBoxMenuItem almacenarResultados = new JCheckBoxMenuItem("Almacenar Resultados");
+		
+		menuOpciones.add(almacenarResultados);
+		
+		JMenuItem cambiarDificultad = new JMenuItem("Cambiar dificultad");
+		cambiarDificultad.setMnemonic(KeyEvent.VK_D);
+		cambiarDificultad.setAccelerator(KeyStroke.getKeyStroke("ctrl D"));
+		cambiarDificultad.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
+		menuOpciones.add(cambiarDificultad);
+		
+		
+		
+		menuBar.add(menuOpciones);
+		setJMenuBar(menuBar);
+		
 	}
 
 }
