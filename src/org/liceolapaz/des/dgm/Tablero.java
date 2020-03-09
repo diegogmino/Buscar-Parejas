@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Random;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -78,20 +79,30 @@ public class Tablero extends JPanel {
 			if (botonPulsado1.getValor() == botonPulsado2.getValor()) {
 				
 				intentos++;
-				
 				numeroParejas--;
 				
 				if (numeroParejas == 0) {
 					JOptionPane.showMessageDialog(null, "¡Enhorabuena! Has ganado en " + intentos + " intento(s)", "Has ganado", JOptionPane.INFORMATION_MESSAGE);
+					int opcion = JOptionPane.showConfirmDialog(null, "¿Quieres jugar otra partida?", "Fin de la partida", JOptionPane.YES_NO_OPTION);
+					if (JOptionPane.YES_NO_OPTION == opcion) {
+						ventana.nuevaPartida();
+					} else {
+						System.exit(0);
+					}
+					
+					
 				} else {
 					JOptionPane.showMessageDialog(null, "Los números son pareja", "Bien hecho", JOptionPane.INFORMATION_MESSAGE);
 				}
-				
 				
 				botonPulsado1.setEnabled(false);
 				botonPulsado2.setEnabled(false);
 				botonPulsado1 = null;
 				botonPulsado2 = null;
+				
+				ventana.intentosNumero.setText(intentos+"");
+				ventana.parejasNumero.setText(numeroParejas+"");
+				
 				
 			} else {
 				
@@ -104,13 +115,56 @@ public class Tablero extends JPanel {
 				
 				botonPulsado1 = null;
 				botonPulsado2 = null;
+				
+				ventana.intentosNumero.setText(intentos+"");
+				
 			}
 		}
 		
 		
 		
 	}
-	
+
+
+	public int getIntentos() {
+		return intentos;
+	}
+
+	public void setIntentos(int intentos) {
+		this.intentos = intentos;
+	}
+
+	public int getNumeroParejas() {
+		return numeroParejas;
+	}
+
+	public void setNumeroParejas(int numeroParejas) {
+		this.numeroParejas = numeroParejas;
+	}
+
+	public int getFilas() {
+		return filas;
+	}
+
+	public void setFilas(int filas) {
+		this.filas = filas;
+	}
+
+	public int getColumnas() {
+		return columnas;
+	}
+
+	public void setColumnas(int columnas) {
+		this.columnas = columnas;
+	}
+
+	public void reiniciarValores() {
+		
+		intentos = 0;
+		numeroParejas = (filas*columnas)/2;
+		
+	}
+
 	
 	
 	

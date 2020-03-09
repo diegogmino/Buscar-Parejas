@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,17 +20,25 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 import org.liceolapaz.des.dgm.Tablero;
 
 public class Ventana extends JFrame {
 	
 	private Tablero tablero;
-	private int filas = 3, columnas = 4;
 	
-	private JFrame inicial = new JFrame();
-	
+	public JLabel intentosNumero;
+	public JLabel parejasNumero;
+	JPanel panel = null;
+	int tiempoSegundos = 0;
+	Timer contador = null;
+	JLabel tiempo = null;
+	private Dialogo mensaje = new Dialogo(this);
+
 	public Ventana() {
 		super();
 		
@@ -83,9 +93,8 @@ public class Ventana extends JFrame {
 				remove(textoTitulo);
 				revalidate();
 				repaint();
-				// Cambiamos el color del borde a rojo
-				// getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.RED));
 				crearTablero();
+				
 			}
 		});
 		
@@ -95,16 +104,70 @@ public class Ventana extends JFrame {
 		setIconImage(new ImageIcon(url).getImage());
 	}
 	
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	private void crearTablero() {
 		
+		Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
+		
 		crearMenu();
+		int filas = 3, columnas = 4;
 		getRootPane().setBorder(null);
 		setResizable(true);
 		setLayout(new BorderLayout());
 		this.tablero = new Tablero(this, filas, columnas);
+		panel = new JPanel();
+		
+		panel.setLayout(new GridLayout());
+		
+		JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
+		intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+		
+		intentosNumero = new JLabel(tablero.getIntentos()+"", SwingConstants.CENTER);
+		intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		intentosNumero.setFont(fuenteNumeros);
+		
+		
+		JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
+		parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+		
+		parejasNumero = new JLabel(tablero.getNumeroParejas()+"", SwingConstants.CENTER);
+		parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		parejasNumero.setFont(fuenteNumeros);
+		
+		JLabel reloj = new JLabel();
+		reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
+		reloj.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		
+		tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
+		TimerTask timerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				tiempoSegundos++;
+				tiempo.setText(tiempoSegundos+"");
+				revalidate();
+				
+			}
+		};
+		contador = new Timer();
+		contador.scheduleAtFixedRate(timerTask, 0, 1000);
+		tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		tiempo.setFont(fuenteNumeros);
+		
+		panel.add(intentos);
+		panel.add(intentosNumero);
+		panel.add(parejas);
+		panel.add(parejasNumero);
+		panel.add(reloj);
+		panel.add(tiempo);
+		
 		add(this.tablero, BorderLayout.CENTER);
+		add(panel, BorderLayout.SOUTH);
+		
+		
 		revalidate();
 		
 	}
@@ -126,6 +189,9 @@ public class Ventana extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				nuevaPartida();
+				
+				
 			}
 		});
 		
@@ -139,6 +205,7 @@ public class Ventana extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				
 				
 			}
@@ -188,9 +255,11 @@ public class Ventana extends JFrame {
 		cambiarDificultad.setAccelerator(KeyStroke.getKeyStroke("ctrl D"));
 		cambiarDificultad.addActionListener(new ActionListener() {
 			
+		
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+			
+				mensaje.setVisible(true);				
 				
 			}
 		});
@@ -203,5 +272,123 @@ public class Ventana extends JFrame {
 		setJMenuBar(menuBar);
 		
 	}
+
+	
+	
+	
+public JLabel getIntentosNumero() {
+		return intentosNumero;
+	}
+
+
+	public void setIntentosNumero(int intentosNumero) {
+		this.intentosNumero.setText(intentosNumero+"");
+	}
+
+
+	public JLabel getParejasNumero() {
+		return parejasNumero;
+	}
+
+
+	public void setParejasNumero(int parejasNumero) {
+		this.parejasNumero.setText(parejasNumero+"");
+	}
+
+	
+	
+	
+	public int getTiempoSegundos() {
+		return tiempoSegundos;
+	}
+
+
+	public void setTiempoSegundos(int tiempoSegundos) {
+		this.tiempoSegundos = tiempoSegundos;
+	}
+
+
+	public void nuevaPartida() {
+		
+		contador.cancel();
+		tablero.reiniciarValores();
+		setParejasNumero(tablero.getFilas()*tablero.getColumnas()/2);
+		setIntentosNumero(0);
+		remove(tablero);
+		remove(tiempo);
+		setTiempoSegundos(0);
+		nuevoTablero(tablero.getFilas(), tablero.getColumnas());
+	}
+	
+	
+	
+public void nuevoTablero(int filas, int columnas) {
+	
+	remove(panel);
+	remove(tablero);
+	remove(tiempo);
+	setTiempoSegundos(0);
+	contador.cancel();
+	Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
+	
+	crearMenu();
+	getRootPane().setBorder(null);
+	setResizable(true);
+	setLayout(new BorderLayout());
+	this.tablero = new Tablero(this, filas, columnas);
+	panel = new JPanel();
+	
+	panel.setLayout(new GridLayout());
+	
+	JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
+	intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+	
+	intentosNumero = new JLabel(tablero.getIntentos()+"", SwingConstants.CENTER);
+	intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+	intentosNumero.setFont(fuenteNumeros);
+	
+	
+	JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
+	parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+	
+	parejasNumero = new JLabel(tablero.getNumeroParejas()+"", SwingConstants.CENTER);
+	parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+	parejasNumero.setFont(fuenteNumeros);
+	
+	JLabel reloj = new JLabel();
+	reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
+	reloj.setHorizontalAlignment(SwingConstants.CENTER);
+	
+	tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
+	tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
+	TimerTask timerTask = new TimerTask() {
+		
+		@Override
+		public void run() {
+			tiempoSegundos++;
+			tiempo.setText(tiempoSegundos+"");
+			revalidate();
+			
+		}
+	};
+	contador = new Timer();
+	contador.scheduleAtFixedRate(timerTask, 0, 1000);
+	tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+	tiempo.setFont(fuenteNumeros);
+	
+	panel.add(intentos);
+	panel.add(intentosNumero);
+	panel.add(parejas);
+	panel.add(parejasNumero);
+	panel.add(reloj);
+	panel.add(tiempo);
+	
+	add(this.tablero, BorderLayout.CENTER);
+	add(panel, BorderLayout.SOUTH);
+	
+	
+	revalidate();
+	repaint();
+}
 
 }
