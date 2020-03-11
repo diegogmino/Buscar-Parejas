@@ -22,7 +22,7 @@ public class Tablero extends JPanel {
 	private int filas;
 	private int columnas;
 	private int pulsados;
-	private Boton[][] botones;
+	public Boton[][] botones;
 	private Boton botonPulsado1 = null, botonPulsado2 = null;
 	private Boton boton;
 	private Dialogo mensaje;

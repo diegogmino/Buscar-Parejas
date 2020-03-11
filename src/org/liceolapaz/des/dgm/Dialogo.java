@@ -24,6 +24,7 @@ public class Dialogo extends JDialog {
 	
 	JTextField numeroFilas = null;
 	JTextField numeroColumnas = null;
+	public String dificultad = "Facil";
 	
 	public Dialogo(Ventana ventana) {
 		super();
@@ -119,6 +120,7 @@ public class Dialogo extends JDialog {
 			if (facil.isSelected()) {
 				numeroFilas.setText("3");
 				numeroColumnas.setText("4");
+				dificultad = "Fácil";
 				
 			}
 			
@@ -135,6 +137,7 @@ public class Dialogo extends JDialog {
 			if (medio.isSelected()) {
 				numeroFilas.setText("4");
 				numeroColumnas.setText("5");
+				dificultad = "Medio";
 				
 			}
 			
@@ -149,8 +152,9 @@ public class Dialogo extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			
 			if (dificil.isSelected()) {
-				numeroFilas.setText("5");
+				numeroFilas.setText("6");
 				numeroColumnas.setText("6");
+				dificultad = "Dificil";
 				
 			}
 		}
@@ -166,6 +170,7 @@ public class Dialogo extends JDialog {
 			if (personalizado.isSelected()) {
 				numeroFilas.setText("");
 				numeroColumnas.setText("");
+				dificultad = "Personalizado";
 			}
 			
 		}

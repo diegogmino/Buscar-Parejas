@@ -7,6 +7,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,15 +21,20 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.TabExpander;
 
 import org.liceolapaz.des.dgm.Tablero;
 
@@ -38,6 +49,8 @@ public class Ventana extends JFrame {
 	Timer contador = null;
 	JLabel tiempo = null;
 	private Dialogo mensaje = new Dialogo(this);
+	private boolean pulsado = false;
+	private File archivo;
 
 	public Ventana() {
 		super();
@@ -206,6 +219,8 @@ public class Ventana extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				guardarInfo();
+				
 				
 				
 			}
@@ -247,7 +262,15 @@ public class Ventana extends JFrame {
 		menuPartida.setMnemonic(KeyEvent.VK_O);
 		
 		JCheckBoxMenuItem almacenarResultados = new JCheckBoxMenuItem("Almacenar Resultados");
-		
+		almacenarResultados.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				pulsado = true;
+				
+			}
+		});
 		menuOpciones.add(almacenarResultados);
 		
 		JMenuItem cambiarDificultad = new JMenuItem("Cambiar dificultad");
@@ -273,9 +296,81 @@ public class Ventana extends JFrame {
 		
 	}
 
+protected void guardarInfo() {
+		
+	String datos = "";
+	JFileChooser filechooser = new JFileChooser();
+	FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de texto (.txt)", "txt");
+	String ruta = "";
+	
+	datos = Integer.toString(tablero.getFilas()) + ";" + Integer.toString(tablero.getColumnas()) + ";" + Integer.toString(tablero.getIntentos()) 
+	+ ";" + Integer.toString(tablero.getNumeroParejas()) + ";" + Integer.toString(tiempoSegundos) + ";" + mensaje.dificultad + ";" + Boolean.toString(pulsado);
 	
 	
+	filechooser.setFileFilter(filter);
 	
+	int seleccion = filechooser.showSaveDialog(null);
+	
+	if (seleccion == JFileChooser.APPROVE_OPTION) {
+		// Guardamos el archivo seleccionado en una variable
+		File fichero = filechooser.getSelectedFile();
+		// Obtenemos la ruta 
+		ruta = fichero.getAbsolutePath();
+		// Si la ruta termina en txt guardamos
+		if (ruta.endsWith("txt")) {
+			
+			if (ruta != null) {
+				archivo = new File(ruta);
+			}
+		} else {
+			// Mensaje de error
+			JOptionPane.showMessageDialog(null, "Especifique la extensión del archivo");
+			// Devolvemos la ruta a null
+			ruta = null;
+			return;
+		}
+		
+	}
+	
+	guardarFichero(datos, archivo);
+	guardarTablero();
+	
+	
+	}
+
+protected void guardarTablero() {
+	
+	String datos = "";
+	
+	for (int fila = 0; fila < tablero.getFilas(); fila++) {
+		for (int columna = 0; columna < tablero.getColumnas(); columna++) {
+			
+			datos = Integer.toString(fila) + ";" + Integer.toString(columna) + ";" + Integer.toString(tablero.botones[fila][columna].getValor());
+			
+			guardarFichero(datos, archivo);
+			
+		}
+	}
+	
+}
+
+
+private void guardarFichero(String datos, File archivo) {
+	
+	try {
+		
+		FileWriter fw = new FileWriter(archivo,true);
+		BufferedWriter bw = new BufferedWriter(fw);
+		PrintWriter pw = new PrintWriter(bw);
+		
+		pw.println(datos);
+		pw.close();
+		
+	} catch (IOException e) {}
+	
+}
+
+
 public JLabel getIntentosNumero() {
 		return intentosNumero;
 	}
@@ -390,5 +485,8 @@ public void nuevoTablero(int filas, int columnas) {
 	revalidate();
 	repaint();
 }
+
+
+
 
 }
