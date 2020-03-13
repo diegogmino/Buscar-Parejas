@@ -30,6 +30,8 @@ public class Dialogo extends JDialog {
 		super();
 		dificultad(ventana);
 	}
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public void dificultad(Ventana ventana) {
 	
@@ -183,11 +185,7 @@ public class Dialogo extends JDialog {
        grupoBotones.add(facil);
        grupoBotones.add(medio);
        grupoBotones.add(dificil);
-       grupoBotones.add(personalizado);
-       
-        
-       
-        
+       grupoBotones.add(personalizado);   
         
 	}
 

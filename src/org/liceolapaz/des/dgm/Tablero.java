@@ -15,7 +15,6 @@ import org.liceolapaz.des.dgm.Ventana;
 import org.liceolapaz.des.dgm.Boton;
 
 
-
 public class Tablero extends JPanel {
 	
 	private Ventana ventana;
@@ -42,6 +41,8 @@ public class Tablero extends JPanel {
 		comprobarPareja(boton);
 	}
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
 	private void crearBotones() {
 		this.botones = new Boton[this.filas][this.columnas];
 		for (int fila = 0; fila < this.filas; fila++) {
@@ -55,6 +56,8 @@ public class Tablero extends JPanel {
 		crearParejas();
 		
 	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	private void crearParejas() {
 		Random random = new Random();
@@ -70,6 +73,8 @@ public class Tablero extends JPanel {
 		
 	}
 	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
 	public void comprobarPareja(Boton boton) {
 		if (botonPulsado1 == null) {
 			botonPulsado1 = boton;
@@ -83,12 +88,23 @@ public class Tablero extends JPanel {
 				
 				if (numeroParejas == 0) {
 					JOptionPane.showMessageDialog(null, "¡Enhorabuena! Has ganado en " + intentos + " intento(s)", "Has ganado", JOptionPane.INFORMATION_MESSAGE);
-					int opcion = JOptionPane.showConfirmDialog(null, "¿Quieres jugar otra partida?", "Fin de la partida", JOptionPane.YES_NO_OPTION);
-					if (JOptionPane.YES_NO_OPTION == opcion) {
-						ventana.nuevaPartida();
+					
+					if (ventana.pulsado) {
+						String usuario = JOptionPane.showInputDialog("Escriba su nombre de usuario:");
+						ventana.almacenarResultados(usuario);
+						
 					} else {
-						System.exit(0);
+						
+						int opcion = JOptionPane.showConfirmDialog(null, "¿Quieres jugar otra partida?", "Fin de la partida", JOptionPane.YES_NO_OPTION);
+						if (JOptionPane.YES_NO_OPTION == opcion) {
+							ventana.nuevaPartida();
+						} else {
+							System.exit(0);
+						}
+						
 					}
+					
+					
 					
 					
 				} else {
@@ -96,12 +112,14 @@ public class Tablero extends JPanel {
 				}
 				
 				botonPulsado1.setEnabled(false);
+				botonPulsado1.pulsado = true;
 				botonPulsado2.setEnabled(false);
+				botonPulsado2.pulsado = true;
 				botonPulsado1 = null;
 				botonPulsado2 = null;
 				
-				ventana.intentosNumero.setText(intentos+"");
-				ventana.parejasNumero.setText(numeroParejas+"");
+				ventana.intentosNumero.setText(Integer.toString(intentos));
+				ventana.parejasNumero.setText(Integer.toString(numeroParejas));
 				
 				
 			} else {
@@ -113,19 +131,21 @@ public class Tablero extends JPanel {
 				botonPulsado1.taparBoton();
 				botonPulsado2.taparBoton();
 				
+				botonPulsado1.setEnabled(true);
+				botonPulsado2.setEnabled(true);
+				
 				botonPulsado1 = null;
 				botonPulsado2 = null;
 				
-				ventana.intentosNumero.setText(intentos+"");
+				ventana.intentosNumero.setText(Integer.toString(intentos));
 				
 			}
 		}
 		
-		
-		
 	}
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public int getIntentos() {
 		return intentos;
 	}

@@ -7,13 +7,18 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,14 +34,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.TabExpander;
-
-import org.liceolapaz.des.dgm.Tablero;
 
 public class Ventana extends JFrame {
 	
@@ -49,8 +49,9 @@ public class Ventana extends JFrame {
 	Timer contador = null;
 	JLabel tiempo = null;
 	private Dialogo mensaje = new Dialogo(this);
-	private boolean pulsado = false;
+	public boolean pulsado = false;
 	private File archivo;
+	String rutaFicheroResultados = "Resultados.txt";
 
 	public Ventana() {
 		super();
@@ -137,7 +138,7 @@ public class Ventana extends JFrame {
 		JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
 		intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		
-		intentosNumero = new JLabel(tablero.getIntentos()+"", SwingConstants.CENTER);
+		intentosNumero = new JLabel(Integer.toString(tablero.getIntentos()), SwingConstants.CENTER);
 		intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		intentosNumero.setFont(fuenteNumeros);
 		
@@ -145,7 +146,7 @@ public class Ventana extends JFrame {
 		JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
 		parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		
-		parejasNumero = new JLabel(tablero.getNumeroParejas()+"", SwingConstants.CENTER);
+		parejasNumero = new JLabel(Integer.toString(tablero.getNumeroParejas()), SwingConstants.CENTER);
 		parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		parejasNumero.setFont(fuenteNumeros);
 		
@@ -160,7 +161,7 @@ public class Ventana extends JFrame {
 			@Override
 			public void run() {
 				tiempoSegundos++;
-				tiempo.setText(tiempoSegundos+"");
+				tiempo.setText(Integer.toString(tiempoSegundos));
 				revalidate();
 				
 			}
@@ -179,7 +180,6 @@ public class Ventana extends JFrame {
 		
 		add(this.tablero, BorderLayout.CENTER);
 		add(panel, BorderLayout.SOUTH);
-		
 		
 		revalidate();
 		
@@ -202,8 +202,7 @@ public class Ventana extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				nuevaPartida();
-				
+				nuevaPartida();		
 				
 			}
 		});
@@ -221,8 +220,6 @@ public class Ventana extends JFrame {
 				
 				guardarInfo();
 				
-				
-				
 			}
 		});
 		
@@ -236,6 +233,8 @@ public class Ventana extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				cargar();
 				
 			}
 		});
@@ -296,112 +295,299 @@ public class Ventana extends JFrame {
 		
 	}
 
-protected void guardarInfo() {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	protected void cargar() {
+	
+		String ruta = "";
+		JFileChooser filechooser = new JFileChooser();
 		
-	String datos = "";
-	JFileChooser filechooser = new JFileChooser();
-	FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de texto (.txt)", "txt");
-	String ruta = "";
-	
-	datos = Integer.toString(tablero.getFilas()) + ";" + Integer.toString(tablero.getColumnas()) + ";" + Integer.toString(tablero.getIntentos()) 
-	+ ";" + Integer.toString(tablero.getNumeroParejas()) + ";" + Integer.toString(tiempoSegundos) + ";" + mensaje.dificultad + ";" + Boolean.toString(pulsado);
-	
-	
-	filechooser.setFileFilter(filter);
-	
-	int seleccion = filechooser.showSaveDialog(null);
-	
-	if (seleccion == JFileChooser.APPROVE_OPTION) {
-		// Guardamos el archivo seleccionado en una variable
-		File fichero = filechooser.getSelectedFile();
-		// Obtenemos la ruta 
-		ruta = fichero.getAbsolutePath();
-		// Si la ruta termina en txt guardamos
-		if (ruta.endsWith("txt")) {
+		int seleccion = filechooser.showOpenDialog(null);
+		
+		if (seleccion == JFileChooser.APPROVE_OPTION) {
 			
-			if (ruta != null) {
-				archivo = new File(ruta);
+			File fichero = filechooser.getSelectedFile();
+			ruta = fichero.getAbsolutePath();
+			
+			if (ruta.endsWith("txt")) {
+				
+				if (ruta != null) {
+					
+					leer(fichero);
+						
+				}
+				
+			} else {
+				// Mensaje de error
+				JOptionPane.showMessageDialog(null, "Escoja un archivo válido");
+				// Devolvemos la ruta a null
+				ruta = null;
+				return;
 			}
-		} else {
-			// Mensaje de error
-			JOptionPane.showMessageDialog(null, "Especifique la extensión del archivo");
-			// Devolvemos la ruta a null
-			ruta = null;
-			return;
 		}
-		
-	}
-	
-	guardarFichero(datos, archivo);
-	guardarTablero();
-	
 	
 	}
 
-protected void guardarTablero() {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
-	String datos = "";
+	private void leer(File fichero) {
 	
-	for (int fila = 0; fila < tablero.getFilas(); fila++) {
-		for (int columna = 0; columna < tablero.getColumnas(); columna++) {
+		FileReader fr = null;
+		
+		try {
+			fr = new FileReader(fichero);
+		} catch (FileNotFoundException e) {}
+		
+		BufferedReader br = new BufferedReader(fr);
+		
+		cabecera(br);
+		
+		partida(br);
+		
+		try {
+			br.close();
+		} catch (IOException e) {}
+	}
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private void cabecera(BufferedReader br) {
+	
+		String info = "";
+		
+		try {
+			info = br.readLine();
+		} catch (IOException e) {}
+		
+		String[] infoCortada = info.split(";");
+		
+		int filasCargadas = Integer.parseInt(infoCortada[0]);
+		int columnasCargadas = Integer.parseInt(infoCortada[1]);
+		int intentosCargados = Integer.parseInt(infoCortada[2]);
+		int parejasCargadas = Integer.parseInt(infoCortada[3]);
+		int tiempoCargado = Integer.parseInt(infoCortada[4]);
+		String dificultadCargada = infoCortada[5];
+		boolean pulsadoCargado = Boolean.parseBoolean(infoCortada[6]);
+		
+		tableroCargado(filasCargadas, columnasCargadas, intentosCargados, parejasCargadas, tiempoCargado, dificultadCargada,
+		pulsadoCargado);
+		
+	}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	private void partida(BufferedReader br) {
+	
+		String datosCasilla = "";
+		
+		try {
+					
+			while((datosCasilla = br.readLine()) != null) {
+						
+				String[] infoCortada = datosCasilla.split(";");
+						
+				int X = Integer.parseInt(infoCortada[0]);
+				int Y = Integer.parseInt(infoCortada[1]);
+				int valor = Integer.parseInt(infoCortada[2]);
+				boolean estado = Boolean.parseBoolean(infoCortada[3]);
+						
+				tablero.botones[X][Y].setValor(valor);
+				
+				if(estado == true) {
+					tablero.botones[X][Y].setText(String.valueOf(valor));
+					tablero.botones[X][Y].setBackground(Color.CYAN);
+					tablero.botones[X][Y].setEnabled(false);
+
+				}
+			}
+					
+		} catch (IOException e) {}
+		
+		
+		
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private void tableroCargado(int filasCargadas, int columnasCargadas, int intentosCargados, int parejasCargadas, int tiempoCargado,
+			String dificultadCargada, boolean pulsadoCargado) {
+	
+		remove(panel);
+		remove(tablero);
+		remove(tiempo);
+		setTiempoSegundos(tiempoCargado);
+		contador.cancel();
+		Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
+	
+		crearMenu();
+		getRootPane().setBorder(null);
+		setResizable(true);
+		setLayout(new BorderLayout());
+		this.tablero = new Tablero(this, filasCargadas, columnasCargadas);
+		panel = new JPanel();
+	
+		panel.setLayout(new GridLayout());
+	
+		JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
+		intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+	
+		intentosNumero = new JLabel(Integer.toString(intentosCargados), SwingConstants.CENTER);
+		intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		intentosNumero.setFont(fuenteNumeros);
+	
+	
+		JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
+		parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+	
+		parejasNumero = new JLabel(Integer.toString(parejasCargadas), SwingConstants.CENTER);
+		parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		parejasNumero.setFont(fuenteNumeros);
+	
+		JLabel reloj = new JLabel();
+		reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
+		reloj.setHorizontalAlignment(SwingConstants.CENTER);
+	
+		tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
+		tiempoSegundos = tiempoCargado;
+		TimerTask timerTask = new TimerTask() {
+		
+			@Override
+			public void run() {
+				tiempoSegundos++;
+				tiempo.setText(Integer.toString(tiempoSegundos));
+				revalidate();
 			
-			datos = Integer.toString(fila) + ";" + Integer.toString(columna) + ";" + Integer.toString(tablero.botones[fila][columna].getValor());
+			}
+		};
+		
+		contador = new Timer();
+		contador.scheduleAtFixedRate(timerTask, 0, 1000);
+		tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		tiempo.setFont(fuenteNumeros);
+	
+		panel.add(intentos);
+		panel.add(intentosNumero);
+		panel.add(parejas);
+		panel.add(parejasNumero);
+		panel.add(reloj);
+		panel.add(tiempo);
+	
+		add(this.tablero, BorderLayout.CENTER);
+		add(panel, BorderLayout.SOUTH);
+	
+		revalidate();
+		repaint();
+	
+	}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	protected void guardarInfo() {
+		
+		String datos = "";
+		JFileChooser filechooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de texto (.txt)", "txt");
+		String ruta = "";
+	
+		datos = Integer.toString(tablero.getFilas()) + ";" + Integer.toString(tablero.getColumnas()) + ";" + Integer.toString(tablero.getIntentos()) 
+		+ ";" + Integer.toString(tablero.getNumeroParejas()) + ";" + Integer.toString(tiempoSegundos) + ";" + mensaje.dificultad + ";" + Boolean.toString(pulsado);
+	
+	
+		filechooser.setFileFilter(filter);
+	
+		int seleccion = filechooser.showSaveDialog(null);
+	
+		if (seleccion == JFileChooser.APPROVE_OPTION) {
+			// Guardamos el archivo seleccionado en una variable
+			File fichero = filechooser.getSelectedFile();
+			// Obtenemos la ruta 
+			ruta = fichero.getAbsolutePath();
+			// Si la ruta termina en txt guardamos
+			if (ruta.endsWith("txt")) {
 			
-			guardarFichero(datos, archivo);
-			
+				if (ruta != null) {
+					archivo = new File(ruta);
+				}
+			} else {
+				// Mensaje de error
+				JOptionPane.showMessageDialog(null, "Especifique la extensión del archivo");
+				// Devolvemos la ruta a null
+				ruta = null;
+				return;
+			}
+		
 		}
+	
+		guardarFichero(datos, archivo);
+		guardarTablero();
+	
+	
+		}
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
+	protected void guardarTablero() {
+	
+		String datos = "";
+	
+		for (int fila = 0; fila < tablero.getFilas(); fila++) {
+			for (int columna = 0; columna < tablero.getColumnas(); columna++) {
+			
+				datos = Integer.toString(fila) + ";" + Integer.toString(columna) + ";" + Integer.toString(tablero.botones[fila][columna].getValor()) + ";" + Boolean.toString(tablero.botones[fila][columna].pulsado);
+			
+				guardarFichero(datos, archivo);
+			
+			}
+		}
+	
 	}
 	
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-private void guardarFichero(String datos, File archivo) {
+	private void guardarFichero(String datos, File archivo) {
 	
-	try {
+		try {
 		
-		FileWriter fw = new FileWriter(archivo,true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		PrintWriter pw = new PrintWriter(bw);
+			FileWriter fw = new FileWriter(archivo,true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
 		
-		pw.println(datos);
-		pw.close();
+			pw.println(datos);
+			pw.close();
 		
-	} catch (IOException e) {}
+		} catch (IOException e) {}
 	
-}
-
-
-public JLabel getIntentosNumero() {
-		return intentosNumero;
 	}
 
-
-	public void setIntentosNumero(int intentosNumero) {
-		this.intentosNumero.setText(intentosNumero+"");
-	}
-
-
-	public JLabel getParejasNumero() {
-		return parejasNumero;
-	}
-
-
-	public void setParejasNumero(int parejasNumero) {
-		this.parejasNumero.setText(parejasNumero+"");
-	}
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	public void almacenarResultados(String usuario) {
+		
+		File directorioResultados = new File(rutaFicheroResultados);
+		
+		Date date = new Date(); 
+		DateFormat fechaHora = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+		
+		String resultados = "Usuario: " + usuario + ", Tiempo: " + Integer.toString(tiempoSegundos) + ", Dificultad: " + mensaje.dificultad 
+				+ ", Fecha y hora: " + fechaHora.format(date);
+		
+		try {
+			
+			FileWriter fw = new FileWriter(directorioResultados,true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
+		
+			pw.println(resultados);
+			pw.close();
+		
+		} catch (IOException e) {}
+		
+	}	
 	
 	
-	
-	public int getTiempoSegundos() {
-		return tiempoSegundos;
-	}
-
-
-	public void setTiempoSegundos(int tiempoSegundos) {
-		this.tiempoSegundos = tiempoSegundos;
-	}
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void nuevaPartida() {
 		
@@ -415,78 +601,107 @@ public JLabel getIntentosNumero() {
 		nuevoTablero(tablero.getFilas(), tablero.getColumnas());
 	}
 	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void nuevoTablero(int filas, int columnas) {
+	
+		remove(panel);
+		remove(tablero);
+		remove(tiempo);
+		setTiempoSegundos(0);
+		contador.cancel();
+		Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
+	
+		crearMenu();
+		getRootPane().setBorder(null);
+		setResizable(true);
+		setLayout(new BorderLayout());
+		this.tablero = new Tablero(this, filas, columnas);
+		panel = new JPanel();
+	
+		panel.setLayout(new GridLayout());
+	
+		JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
+		intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+	
+		intentosNumero = new JLabel(Integer.toString(tablero.getIntentos()), SwingConstants.CENTER);
+		intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		intentosNumero.setFont(fuenteNumeros);
 	
 	
-public void nuevoTablero(int filas, int columnas) {
+		JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
+		parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 	
-	remove(panel);
-	remove(tablero);
-	remove(tiempo);
-	setTiempoSegundos(0);
-	contador.cancel();
-	Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
+		parejasNumero = new JLabel(Integer.toString(tablero.getNumeroParejas()), SwingConstants.CENTER);
+		parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		parejasNumero.setFont(fuenteNumeros);
 	
-	crearMenu();
-	getRootPane().setBorder(null);
-	setResizable(true);
-	setLayout(new BorderLayout());
-	this.tablero = new Tablero(this, filas, columnas);
-	panel = new JPanel();
+		JLabel reloj = new JLabel();
+		reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
+		reloj.setHorizontalAlignment(SwingConstants.CENTER);
 	
-	panel.setLayout(new GridLayout());
-	
-	JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
-	intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-	
-	intentosNumero = new JLabel(tablero.getIntentos()+"", SwingConstants.CENTER);
-	intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
-	intentosNumero.setFont(fuenteNumeros);
-	
-	
-	JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
-	parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-	
-	parejasNumero = new JLabel(tablero.getNumeroParejas()+"", SwingConstants.CENTER);
-	parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
-	parejasNumero.setFont(fuenteNumeros);
-	
-	JLabel reloj = new JLabel();
-	reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
-	reloj.setHorizontalAlignment(SwingConstants.CENTER);
-	
-	tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
-	tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
-	TimerTask timerTask = new TimerTask() {
+		tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
+		TimerTask timerTask = new TimerTask() {
 		
-		@Override
-		public void run() {
-			tiempoSegundos++;
-			tiempo.setText(tiempoSegundos+"");
-			revalidate();
+			@Override
+			public void run() {
+				tiempoSegundos++;
+				tiempo.setText(Integer.toString(tiempoSegundos));
+				revalidate();
 			
-		}
-	};
-	contador = new Timer();
-	contador.scheduleAtFixedRate(timerTask, 0, 1000);
-	tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
-	tiempo.setFont(fuenteNumeros);
+			}
+		};
+		
+		contador = new Timer();
+		contador.scheduleAtFixedRate(timerTask, 0, 1000);
+		tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
+		tiempo.setFont(fuenteNumeros);
 	
-	panel.add(intentos);
-	panel.add(intentosNumero);
-	panel.add(parejas);
-	panel.add(parejasNumero);
-	panel.add(reloj);
-	panel.add(tiempo);
+		panel.add(intentos);
+		panel.add(intentosNumero);
+		panel.add(parejas);
+		panel.add(parejasNumero);
+		panel.add(reloj);
+		panel.add(tiempo);
 	
-	add(this.tablero, BorderLayout.CENTER);
-	add(panel, BorderLayout.SOUTH);
+		add(this.tablero, BorderLayout.CENTER);
+		add(panel, BorderLayout.SOUTH);
 	
-	
-	revalidate();
-	repaint();
+		revalidate();
+		repaint();
 }
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	public JLabel getIntentosNumero() {
+		return intentosNumero;
+	}
 
 
+	public void setIntentosNumero(int intentosNumero) {
+		this.intentosNumero.setText(Integer.toString(intentosNumero));
+	}
+
+
+	public JLabel getParejasNumero() {
+		return parejasNumero;
+	}
+
+
+	public void setParejasNumero(int parejasNumero) {
+		this.parejasNumero.setText(Integer.toString(parejasNumero));
+	}
+	
+	public int getTiempoSegundos() {
+		return tiempoSegundos;
+	}
+
+	public void setTiempoSegundos(int tiempoSegundos) {
+		this.tiempoSegundos = tiempoSegundos;
+	}
+
+
+	
 
 
 }

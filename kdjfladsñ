@@ -1,0 +1,41 @@
+[33mcommit 7392d7d330853b8ae3b2bcfaa7157ec8e451b4d4[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Wed Mar 11 11:16:18 2020 +0100
+
+    Guardar terminado
+
+[33mcommit f4cf82b993a03c07a99c57b36535fecb8f7efe31[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Mon Mar 9 13:25:20 2020 +0100
+
+    Nueva partida, cambiar dificultad y timer acabados
+
+[33mcommit ebfc2f3e2c9ce686b584b649fda1c3edcbbb377b[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Mon Mar 2 12:02:10 2020 +0100
+
+    Funciona jugar
+
+[33mcommit 5d4193cb28230c62fffb91386f03a6f8f30cafbc[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Fri Feb 28 10:54:20 2020 +0100
+
+    Menu y tablero listos
+
+[33mcommit e5a936058d2ab6cc6015b4922a0518bda6ae607f[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Thu Feb 20 11:23:18 2020 +0100
+
+    Metodo de borrar la ventana teminado
+
+[33mcommit eca52b917e5c34e94f469f05e11f017aa11db481[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Wed Feb 19 12:00:51 2020 +0100
+
+    Pantalla principal lista
+
+[33mcommit 2227418361bcaa29452e9da1de7509ae9a184ff6[m
+Author: DiegoGarcia <diego.garcia.mino@gmail.com>
+Date:   Tue Feb 18 10:44:04 2020 +0100
+
+    Clases creadas
