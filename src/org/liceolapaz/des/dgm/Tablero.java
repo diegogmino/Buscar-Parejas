@@ -44,6 +44,7 @@ public class Tablero extends JPanel {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	private void crearBotones() {
+		// Método de crear botones
 		this.botones = new Boton[this.filas][this.columnas];
 		for (int fila = 0; fila < this.filas; fila++) {
 			for (int columna = 0; columna < this.columnas; columna++) {
@@ -57,9 +58,10 @@ public class Tablero extends JPanel {
 		
 	}
 	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	private void crearParejas() {
+		// Método para crear parejas de manera aleatoria
 		Random random = new Random();
 		int valor = 1;
 		while (valor <= (this.filas * this.columnas)/2) {
@@ -73,9 +75,10 @@ public class Tablero extends JPanel {
 		
 	}
 	
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	public void comprobarPareja(Boton boton) {
+		// Método para comprobar si dos botones hacen pareja
 		if (botonPulsado1 == null) {
 			botonPulsado1 = boton;
 		} else {
@@ -92,19 +95,14 @@ public class Tablero extends JPanel {
 					if (ventana.pulsado) {
 						String usuario = JOptionPane.showInputDialog("Escriba su nombre de usuario:");
 						ventana.almacenarResultados(usuario);
-						
-					} else {
-						
-						int opcion = JOptionPane.showConfirmDialog(null, "¿Quieres jugar otra partida?", "Fin de la partida", JOptionPane.YES_NO_OPTION);
-						if (JOptionPane.YES_NO_OPTION == opcion) {
-							ventana.nuevaPartida();
-						} else {
-							System.exit(0);
-						}
-						
 					}
 					
-					
+					int opcion = JOptionPane.showConfirmDialog(null, "¿Quieres jugar otra partida?", "Fin de la partida", JOptionPane.YES_NO_OPTION);
+					if (JOptionPane.YES_NO_OPTION == opcion) {
+						ventana.nuevaPartida();
+					} else {
+						System.exit(0);
+					}
 					
 					
 				} else {

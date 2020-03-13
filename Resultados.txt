@@ -1,2 +1,3 @@
 Usuario: Diego, Tiempo: 43, Dificultad: Facil, Fecha y hora: 10:45:16 13/03/20
-
+Usuario: null, Tiempo: 5, Dificultad: Facil, Fecha y hora: 11:10:56 13/03/20
+Usuario: null, Tiempo: 28, Dificultad: Facil, Fecha y hora: 11:41:41 13/03/20

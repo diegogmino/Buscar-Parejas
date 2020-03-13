@@ -41,6 +41,7 @@ public class Boton extends JButton {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public void taparBoton() {
+		// Método para ocultar el valor de los botones
 		setBackground(Color.WHITE);
 		setText("");
 	}
@@ -48,6 +49,7 @@ public class Boton extends JButton {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	protected void pulsar() {	
+		// Método que se llama cuando el usuario pulsa un botón
 		setText(String.valueOf(valor));
 		setBackground(Color.CYAN);
 		this.setEnabled(false);

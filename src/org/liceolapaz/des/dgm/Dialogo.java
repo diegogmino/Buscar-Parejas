@@ -34,7 +34,7 @@ public class Dialogo extends JDialog {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public void dificultad(Ventana ventana) {
-	
+		// Diálogo de nivel de dificultad
 		setResizable(false);
 		setTitle("Nivel de dificultad");
 		setSize(400, 300);
@@ -42,10 +42,11 @@ public class Dialogo extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		URL url = getClass().getResource("/icono.PNG");
 		setIconImage(new ImageIcon(url).getImage());
-		
+		// Creamos el panel
 		JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.CENTER));
         getContentPane().add(panel, BorderLayout.SOUTH);
+        
         {
             JButton aceptar = new JButton("Aceptar");
             aceptar.addActionListener(new ActionListener() {
@@ -59,7 +60,7 @@ public class Dialogo extends JDialog {
 						dispose();
 						
 					} else {
-						
+						// Comprobación de que el número de casillas introducida sea par
 						JOptionPane.showMessageDialog(null, "El número de casillas debe ser par", "Error", JOptionPane.ERROR_MESSAGE);
 						
 					}
@@ -89,7 +90,7 @@ public class Dialogo extends JDialog {
        JPanel filasColumnas = new JPanel();
        filasColumnas.setLayout(null);
        getContentPane().add(filasColumnas);
-         
+       // Filas
        JLabel filas = new JLabel("Filas");
        filas.setBounds(30, 30, 30, 10);
        filasColumnas.add(filas);
@@ -98,7 +99,7 @@ public class Dialogo extends JDialog {
        numeroFilas.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
        numeroFilas.setBounds(180, 26, 190, 20);
        filasColumnas.add(numeroFilas);
-        
+       // Columnas
        JLabel columnas = new JLabel("Columnas");
        columnas.setBounds(30, 80, 70, 30);
        filasColumnas.add(columnas);
@@ -108,11 +109,11 @@ public class Dialogo extends JDialog {
        numeroColumnas.setBounds(180, 80, 190, 20);
        filasColumnas.add(numeroColumnas);
         
-        
+       // Panel para poner las distintas dificultades 
        JPanel dificultades = new JPanel();
        dificultades.setLayout(new FlowLayout(FlowLayout.CENTER));
        getContentPane().add(dificultades, BorderLayout.NORTH);
-        
+       
        JRadioButton facil = new JRadioButton("Facil");
        facil.addActionListener(new ActionListener() {
 		
@@ -180,7 +181,7 @@ public class Dialogo extends JDialog {
 		
 	});
        dificultades.add(personalizado);
-        
+       // Creamos un grupo de botones para que solo se pueda seleccionar uno de ellos
        ButtonGroup grupoBotones = new ButtonGroup();
        grupoBotones.add(facil);
        grupoBotones.add(medio);

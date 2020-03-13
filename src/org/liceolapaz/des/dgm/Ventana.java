@@ -124,7 +124,7 @@ public class Ventana extends JFrame {
 	private void crearTablero() {
 		
 		Font fuenteNumeros = new Font("Arial", Font.BOLD, 30);
-		
+		// Llamamos a crear menú
 		crearMenu();
 		int filas = 3, columnas = 4;
 		getRootPane().setBorder(null);
@@ -134,27 +134,27 @@ public class Ventana extends JFrame {
 		panel = new JPanel();
 		
 		panel.setLayout(new GridLayout());
-		
+		// Label intentos
 		JLabel intentos = new JLabel("Intentos", SwingConstants.CENTER);
 		intentos.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-		
+		// Label para el número de intentos
 		intentosNumero = new JLabel(Integer.toString(tablero.getIntentos()), SwingConstants.CENTER);
 		intentosNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		intentosNumero.setFont(fuenteNumeros);
 		
-		
+		// Label de parejas
 		JLabel parejas = new JLabel("Parejas", SwingConstants.CENTER);
 		parejas.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-		
+		// Label apara el número de parejas
 		parejasNumero = new JLabel(Integer.toString(tablero.getNumeroParejas()), SwingConstants.CENTER);
 		parejasNumero.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		parejasNumero.setFont(fuenteNumeros);
-		
+		// Icono del reloj
 		JLabel reloj = new JLabel();
 		reloj.setIcon(new ImageIcon(getClass().getResource("/reloj.PNG")));
 		reloj.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		
+		// Label para el tiempo del reloj
 		tiempo = new JLabel(tiempo+"", SwingConstants.CENTER);
 		TimerTask timerTask = new TimerTask() {
 			
@@ -170,7 +170,7 @@ public class Ventana extends JFrame {
 		contador.scheduleAtFixedRate(timerTask, 0, 1000);
 		tiempo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
 		tiempo.setFont(fuenteNumeros);
-		
+		// Añadimos todos los label
 		panel.add(intentos);
 		panel.add(intentosNumero);
 		panel.add(parejas);
@@ -185,14 +185,14 @@ public class Ventana extends JFrame {
 		
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public void crearMenu() {
-		
+		// Método para crear el menú
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuPartida = new JMenu("Partida");
 		menuPartida.setMnemonic(KeyEvent.VK_P);	
-		
+		// Nueva partida
 		JMenuItem nuevaPartida = new JMenuItem("Nueva partida");
 		nuevaPartida.setIcon(new ImageIcon(getClass().getResource("/NuevaPartida.png")));
 		nuevaPartida.setMnemonic(KeyEvent.VK_N);
@@ -208,7 +208,7 @@ public class Ventana extends JFrame {
 		});
 		
 		menuPartida.add(nuevaPartida);
-		
+		// Guardar partida
 		JMenuItem guardarPartida = new JMenuItem("Guardar Partida");
 		guardarPartida.setIcon(new ImageIcon(getClass().getResource("/GuardarPartida.png")));
 		guardarPartida.setMnemonic(KeyEvent.VK_G);
@@ -224,7 +224,7 @@ public class Ventana extends JFrame {
 		});
 		
 		menuPartida.add(guardarPartida);
-		
+		// Cargar partida
 		JMenuItem cargarPartida = new JMenuItem("Cargar Partida");
 		cargarPartida.setIcon(new ImageIcon(getClass().getResource("/CargarPartida.png")));
 		cargarPartida.setMnemonic(KeyEvent.VK_C);
@@ -240,7 +240,7 @@ public class Ventana extends JFrame {
 		});
 		
 		menuPartida.add(cargarPartida);
-		
+		// Salir
 		JMenuItem salir = new JMenuItem("Salir");
 		salir.setIcon(new ImageIcon(getClass().getResource("/salir.png")));
 		salir.setMnemonic(KeyEvent.VK_S);
@@ -256,10 +256,10 @@ public class Ventana extends JFrame {
 		menuPartida.add(salir);
 		menuBar.add(menuPartida);
 		
-		
+		// Pestaña de opciones
 		JMenu menuOpciones = new JMenu("Opciones");
 		menuPartida.setMnemonic(KeyEvent.VK_O);
-		
+		// Checkbox de almacenar resultados
 		JCheckBoxMenuItem almacenarResultados = new JCheckBoxMenuItem("Almacenar Resultados");
 		almacenarResultados.addActionListener(new ActionListener() {
 			
@@ -271,7 +271,7 @@ public class Ventana extends JFrame {
 			}
 		});
 		menuOpciones.add(almacenarResultados);
-		
+		// Cambiar dificultad
 		JMenuItem cambiarDificultad = new JMenuItem("Cambiar dificultad");
 		cambiarDificultad.setMnemonic(KeyEvent.VK_D);
 		cambiarDificultad.setAccelerator(KeyStroke.getKeyStroke("ctrl D"));
@@ -298,7 +298,7 @@ public class Ventana extends JFrame {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	protected void cargar() {
-	
+		// Método de cargar partida
 		String ruta = "";
 		JFileChooser filechooser = new JFileChooser();
 		
@@ -352,7 +352,7 @@ public class Ventana extends JFrame {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private void cabecera(BufferedReader br) {
-	
+		// Método de leer la primera línea del archivo
 		String info = "";
 		
 		try {
@@ -361,6 +361,7 @@ public class Ventana extends JFrame {
 		
 		String[] infoCortada = info.split(";");
 		
+		// Guardamos la información en distintas variables 
 		int filasCargadas = Integer.parseInt(infoCortada[0]);
 		int columnasCargadas = Integer.parseInt(infoCortada[1]);
 		int intentosCargados = Integer.parseInt(infoCortada[2]);
@@ -368,7 +369,7 @@ public class Ventana extends JFrame {
 		int tiempoCargado = Integer.parseInt(infoCortada[4]);
 		String dificultadCargada = infoCortada[5];
 		boolean pulsadoCargado = Boolean.parseBoolean(infoCortada[6]);
-		
+		// Le pasamos la informacióna un método de crear un nuevo tablero
 		tableroCargado(filasCargadas, columnasCargadas, intentosCargados, parejasCargadas, tiempoCargado, dificultadCargada,
 		pulsadoCargado);
 		
@@ -378,7 +379,7 @@ public class Ventana extends JFrame {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	private void partida(BufferedReader br) {
-	
+		// Método de leer la información de cada uno de los botones
 		String datosCasilla = "";
 		
 		try {
@@ -386,7 +387,7 @@ public class Ventana extends JFrame {
 			while((datosCasilla = br.readLine()) != null) {
 						
 				String[] infoCortada = datosCasilla.split(";");
-						
+					// Guardamos información en distintas variables	
 				int X = Integer.parseInt(infoCortada[0]);
 				int Y = Integer.parseInt(infoCortada[1]);
 				int valor = Integer.parseInt(infoCortada[2]);
@@ -395,6 +396,7 @@ public class Ventana extends JFrame {
 				tablero.botones[X][Y].setValor(valor);
 				
 				if(estado == true) {
+					
 					tablero.botones[X][Y].setText(String.valueOf(valor));
 					tablero.botones[X][Y].setBackground(Color.CYAN);
 					tablero.botones[X][Y].setEnabled(false);
@@ -408,11 +410,11 @@ public class Ventana extends JFrame {
 		
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private void tableroCargado(int filasCargadas, int columnasCargadas, int intentosCargados, int parejasCargadas, int tiempoCargado,
 			String dificultadCargada, boolean pulsadoCargado) {
-	
+		// Método de cargar un tablero con las variables que le pasamos
 		remove(panel);
 		remove(tablero);
 		remove(tiempo);
@@ -485,7 +487,7 @@ public class Ventana extends JFrame {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	protected void guardarInfo() {
-		
+		// Método para crear la cabecera para luego guardarla
 		String datos = "";
 		JFileChooser filechooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de texto (.txt)", "txt");
@@ -496,7 +498,7 @@ public class Ventana extends JFrame {
 	
 	
 		filechooser.setFileFilter(filter);
-	
+		// Llamamos al filechooser para abrir una ventana
 		int seleccion = filechooser.showSaveDialog(null);
 	
 		if (seleccion == JFileChooser.APPROVE_OPTION) {
@@ -519,7 +521,7 @@ public class Ventana extends JFrame {
 			}
 		
 		}
-	
+		// Llamamos a los métodos de guardar
 		guardarFichero(datos, archivo);
 		guardarTablero();
 	
@@ -529,14 +531,14 @@ public class Ventana extends JFrame {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	protected void guardarTablero() {
-	
+		// Método para guardar la información de cada botón
 		String datos = "";
 	
 		for (int fila = 0; fila < tablero.getFilas(); fila++) {
 			for (int columna = 0; columna < tablero.getColumnas(); columna++) {
 			
 				datos = Integer.toString(fila) + ";" + Integer.toString(columna) + ";" + Integer.toString(tablero.botones[fila][columna].getValor()) + ";" + Boolean.toString(tablero.botones[fila][columna].pulsado);
-			
+				// Llamamos al método de guardar fichero
 				guardarFichero(datos, archivo);
 			
 			}
@@ -547,7 +549,7 @@ public class Ventana extends JFrame {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private void guardarFichero(String datos, File archivo) {
-	
+		// Guardamos la información 
 		try {
 		
 			FileWriter fw = new FileWriter(archivo,true);
@@ -564,9 +566,9 @@ public class Ventana extends JFrame {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	public void almacenarResultados(String usuario) {
-		
+		// Método del checkbox de almacenar resultados
 		File directorioResultados = new File(rutaFicheroResultados);
-		
+		// Variable de fecha
 		Date date = new Date(); 
 		DateFormat fechaHora = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 		
@@ -590,7 +592,7 @@ public class Ventana extends JFrame {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void nuevaPartida() {
-		
+		// Método de nueva partida
 		contador.cancel();
 		tablero.reiniciarValores();
 		setParejasNumero(tablero.getFilas()*tablero.getColumnas()/2);
@@ -604,7 +606,7 @@ public class Ventana extends JFrame {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void nuevoTablero(int filas, int columnas) {
-	
+		// Método para crear el tablero inicial
 		remove(panel);
 		remove(tablero);
 		remove(tiempo);
